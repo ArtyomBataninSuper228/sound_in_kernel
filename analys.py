@@ -75,8 +75,8 @@ while T < data.shape[0]/sr -dt:
 
 
     plt.plot(mf, ma)
-
-    plt.savefig(os.path.join(dir, "gr", f"{round(T, 3)}_{round(T + dt, 3)}" + ".png"), dpi=300)
+    plt.ylim(0, max(ma)+0.001)
+    plt.savefig(os.path.join(dir, "gr", f"{round(T*1000)}_{round((T+dt)*1000)}" + ".png"), dpi=300)
     plt.close()
 
     X.append(T)
