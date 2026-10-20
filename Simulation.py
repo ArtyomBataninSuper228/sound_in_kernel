@@ -5,6 +5,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from threading import Thread
 import torch.nn.functional as F
+import integral
 
 def div(m):
     n = len(m.shape)
@@ -63,6 +64,28 @@ class Simulation:
         self.V += self.F*self.lmbda
         self.field += self.V*self.lmbda/2
         self.T += self.dt
+    def diff_(self):
+        acc = div(self.field).div_(self.masses)
+        return torch.stack([self.V, acc], dim=0)
+    def do_step_(self, diff ,dt):
+
+        self.V += diff[1] * self.c*(2**0.5*dt) / self.k
+        self.field += diff[0] * self.c*(2**0.5*dt) / self.k
+        self.T += dt
+        return self
+    def update_(self, method ):
+            while 1:
+                d = lambda s: s.diff_()
+                st = lambda s, h, k: s.do_step_(k, h)
+
+                new = integral.do_backward_2_step(self, d, st, self.dt)
+                self.V = new.V
+                self.field = new.field
+                if self.f != None:
+                    self.f()
+                if self.toe != None and self.T >= self.toe:
+                    break
+
     def update(self):
         while 1:
             self.do_step()

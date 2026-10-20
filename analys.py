@@ -34,8 +34,8 @@ for exp in data:
         if(ma[i] > 10*middle and mf[i] > 4000):
             piks[-1].append([i, float(mf[i]), float(ma[i])])
             print(float(mf[i]))
-'''
 
+'''
 
 
 file = wavfile.read(os.path.join(dir, "full.wav"))
@@ -55,10 +55,12 @@ while T < data.shape[0]/sr -dt:
     plt.close()
     prev = 0
     print(T)
+    middle = ma.sum() / ma.shape[0]
     plt.figure(figsize=(32, 18))
     for j in range(mf.shape[0] - 1):
-        middle = ma.sum()/ma.shape[0]
+
         if (ma[j] > ma[j + 1] and ma[j] > middle*11.45):
+
             #print(mf[j])
             prev = j
             plt.annotate(
@@ -72,19 +74,22 @@ while T < data.shape[0]/sr -dt:
                 color="blue",
             )
 
-
-
+    Y.append(ma[84])
+    X.append(T)
     plt.plot(mf, ma)
     plt.ylim(0, max(ma)+0.001)
+    plt.xlabel('Частота')
+    plt.ylabel('Амплитуда')
     plt.savefig(os.path.join(dir, "gr", f"{round(T*1000)}_{round((T+dt)*1000)}" + ".png"), dpi=300)
     plt.close()
 
-    X.append(T)
-    Y.append(ma[0])
     T+= dt
     i += 1
-#plt.plot(X, Y)
-#plt.show()
+
+
+
+plt.plot(X, Y)
+plt.show()
 
 
 
